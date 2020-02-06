@@ -1,0 +1,9 @@
+{
+  "extends": ["wesbos"],
+  "rules": {
+    "class-methods-use-this": "off",
+    "no-continue": "warn",
+    "no-restricted-syntax": "off",
+    "no-use-before-define": "off"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "token": "",
+  "defaultPrefix": ".",
+  "dashboardConfig": {
+    "port": 3001
+  },
+  "clientID": "",
+  "clientSecret": "",
+  "callbackUri": "",
+  "db": {
+    "connectionString": "mongodb://localhost:27017/",
+    "databaseName": "wikibot"
+  },
+  "webURL": ""
+}
