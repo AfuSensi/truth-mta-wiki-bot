@@ -19,14 +19,6 @@ module.exports = class extends Route {
     /* eslint-disable camelcase */
     if (!request.body.code) return this.noCode(response);
 
-    const params = new URLSearchParams();
-    params.append('grant_type', 'authorization_code');
-    params.append('redirect_uri', 'http://localhost:8080/callback');
-    params.append('code', request.body.code);
-    params.append('client_id', this.client.options.clientID);
-    params.append('client_secret', this.client.options.clientSecret);
-    params.append('scope', 'identify%20guilds');
-
     const postData = qs.stringify({
       grant_type: 'authorization_code',
       redirect_uri: this.client.options.callbackUri,

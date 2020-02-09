@@ -1,9 +1,7 @@
 const {
   Route,
-  util: { encrypt },
+  constants: { RESPONSES },
 } = require('klasa-dashboard-hooks');
-
-const fetch = require('node-fetch');
 
 module.exports = class extends Route {
   constructor(...args) {
@@ -13,38 +11,14 @@ module.exports = class extends Route {
     });
   }
 
-  async api(_token) {
-    const token = `Bearer ${_token}`;
-    const user = await fetch('https://discordapp.com/api/users/@me', {
-      headers: { Authorization: token },
-    }).then(result => result.json());
-    await this.client.users.fetch(user.id);
-    user.guilds = await fetch('https://discordapp.com/api/users/@me/guilds', {
-      headers: { Authorization: token },
-    }).then(result => result.json());
-    return this.client.dashboardUsers.add(user);
-  }
-
   async get(request, response) {
+    const { oauthUser } = this;
+    if (!oauthUser) return this.notReady(response);
+
     let dashboardUser = this.client.dashboardUsers.get(request.auth.scope[0]);
 
     if (!dashboardUser) {
-      dashboardUser = await this.api(request.auth.token);
-      response.setHeader(
-        'Authorization',
-        encrypt(
-          {
-            token: request.auth.token,
-            scope: [
-              dashboardUser.id,
-              ...dashboardUser.guilds
-                .filter(guild => guild.userCanManage)
-                .map(guild => guild.id),
-            ],
-          },
-          this.client.options.clientSecret
-        )
-      );
+      dashboardUser = await oauthUser.api(request.auth.token);
     }
 
     const managedGuildList = dashboardUser.guilds
@@ -58,5 +32,10 @@ module.exports = class extends Route {
       }));
 
     return response.end(JSON.stringify(managedGuildList));
+  }
+
+  notReady(response) {
+    response.writeHead(500);
+    return response.end(RESPONSES.NOT_READY);
   }
 };
