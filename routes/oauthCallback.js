@@ -42,7 +42,7 @@ module.exports = class extends Route {
     if (!res || res.status !== 200)
       return response.end(RESPONSES.FETCHING_TOKEN);
 
-    const { oauthUser } = this;
+    const oauthUser = this.store.get('oauthUser');
 
     if (!oauthUser) return this.notReady(response);
 

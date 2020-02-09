@@ -1,5 +1,6 @@
 const {
   Route,
+  util: { encrypt },
   constants: { RESPONSES },
 } = require('klasa-dashboard-hooks');
 
@@ -12,13 +13,28 @@ module.exports = class extends Route {
   }
 
   async get(request, response) {
-    const { oauthUser } = this;
+    const oauthUser = this.store.get('oauthUser');
     if (!oauthUser) return this.notReady(response);
 
     let dashboardUser = this.client.dashboardUsers.get(request.auth.scope[0]);
 
     if (!dashboardUser) {
       dashboardUser = await oauthUser.api(request.auth.token);
+      response.setHeader(
+        'Authorization',
+        encrypt(
+          {
+            token: request.auth.token,
+            scope: [
+              dashboardUser.id,
+              ...dashboardUser.guilds
+                .filter(guild => guild.userCanManage)
+                .map(guild => guild.id),
+            ],
+          },
+          this.client.options.clientSecret
+        )
+      );
     }
 
     const managedGuildList = dashboardUser.guilds
