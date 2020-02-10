@@ -44,7 +44,7 @@ module.exports = class extends Monitor {
       return;
     }
 
-    const matches = [...matchAll(content, /`(.*?)`/g)];
+    const matches = [...matchAll(content, /(?<!`)`([a-zA-Z ]{3,20})`(?!`)/g)];
     if (matches && matches.length > 0) {
       const send = 0;
       for (const match of matches) {
