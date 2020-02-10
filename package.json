@@ -14,7 +14,7 @@
     "klasa": "github:dirigeants/klasa#master",
     "klasa-dashboard-hooks": "github:dirigeants/klasa-dashboard-hooks#master",
     "mongodb": "^3.5.2",
-    "mta-wiki-parser": "^1.0.5",
+    "mta-wiki-parser": "^1.0.6",
     "node-fetch": "^2.6.0",
     "string.prototype.matchall": "^4.0.2"
   },
