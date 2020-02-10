@@ -4,7 +4,7 @@ const {
   constants: { RESPONSES },
 } = require('klasa-dashboard-hooks');
 const { inspect } = require('util');
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 module.exports = class extends Route {
   constructor(...args) {
@@ -16,13 +16,24 @@ module.exports = class extends Route {
 
   async api(_token) {
     const token = `Bearer ${_token}`;
-    const user = await fetch('https://discordapp.com/api/users/@me', {
+    let user = {};
+    const userRes = await axios.get('https://discordapp.com/api/users/@me', {
       headers: { Authorization: token },
-    }).then(result => result.json());
-    await this.client.users.fetch(user.id);
-    user.guilds = await fetch('https://discordapp.com/api/users/@me/guilds', {
-      headers: { Authorization: token },
-    }).then(result => result.json());
+    });
+    if (!userRes || !userRes.data) throw new Error('Failed to fetch user');
+    user = userRes.data;
+
+    const userGuildsRes = await axios.get(
+      'https://discordapp.com/api/users/@me/guilds',
+      {
+        headers: { Authorization: token },
+      }
+    );
+
+    user.guilds = [];
+    if (userGuildsRes && userGuildsRes.data) {
+      user.guilds = userGuildsRes.data;
+    }
     return this.client.dashboardUsers.add(user);
   }
 
