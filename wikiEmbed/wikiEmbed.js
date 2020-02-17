@@ -4,6 +4,9 @@ const { MessageEmbed } = require('discord.js');
 const {
   Client: { plugin },
 } = require('klasa');
+// Maximum field lengths
+const EMBED_FIELD_MAX = 1020;
+const EMBED_TOTAL_MAX = 5990;
 
 function getColorFromType(type) {
   if (type === 'Server Function' || type === 'Server Event') return '#FF7F00';
@@ -27,6 +30,38 @@ function getUrlFromType(type) {
     return 'https://wiki.multitheftauto.com/wiki/Useful_Functions';
   return 'https://wiki.multitheftauto.com/wiki/Main_Page';
 }
+
+function countObjectCharLength(object) {
+  let charCount = 0;
+  for (const property in object) {
+    if (Object.prototype.hasOwnProperty.call(object, property)) {
+      if (typeof object[property] === 'object') {
+        charCount += countObjectCharLength(object[property]);
+      } else {
+        charCount += object[property].toString().length;
+      }
+    }
+  }
+  return charCount;
+}
+
+function conformEmbedCharLength(embed) {
+  // Limit all fields
+  embed.fields.forEach((val, index, arr) => {
+    arr[index].value = arr[index].value.substring(0, EMBED_FIELD_MAX);
+  });
+
+  while (
+    countObjectCharLength(embed) >= EMBED_TOTAL_MAX &&
+    embed.fields.length > 0
+  ) {
+    // If length exceeds, remove fields
+    embed.fields.pop();
+  }
+
+  return embed;
+}
+
 function getDescriptionString(article) {
   let description = '';
   let maxDescriptionLength = 400;
@@ -64,9 +99,8 @@ function getDescriptionString(article) {
     : description;
 }
 
-// TODO: Fix parameters for events
 function getEmbed(article, guildSettings, requester) {
-  const embed = {
+  let embed = {
     color: getColorFromType(article.type),
     title: article.title,
     url: article.url,
@@ -201,6 +235,7 @@ function getEmbed(article, guildSettings, requester) {
     }
   }
   embed.fields = fields;
+  embed = conformEmbedCharLength(embed);
   return new MessageEmbed(embed);
 }
 
