@@ -7,8 +7,8 @@ module.exports = class extends Task {
   }
 
   async run() {
-    if (!this.client.dashboardUsers) return;
-    this.client.dashboardUsers.forEach((value, key, map) => {
+    if (!this.client.dashboardUsers.cache) return;
+    this.client.dashboardUsers.cache.forEach((value, key, map) => {
       if (!value.fetched || new Date() - value.fetched > maxUserAge) {
         console.log(`Invalidating dashboarduser ${key}`);
         map.delete(key);

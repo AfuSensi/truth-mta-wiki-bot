@@ -12,7 +12,7 @@ new Client({
   slowmode: 1000,
   disabledCorePieces: ['commands'],
   readyMessage: c =>
-    `Successfully initialized. Ready to serve ${c.guilds.size} guilds.`,
+    `Successfully initialized. Ready to serve ${c.guilds.cache.size} guilds.`,
   presence: {
     status: 'online',
     activity: {

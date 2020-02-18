@@ -14,7 +14,7 @@ module.exports = class extends Route {
 
   formatGuildChannels(guild) {
     const channelBlacklists = guild.settings.get('channelBlacklist');
-    const rawFormatted = guild.channels
+    const rawFormatted = guild.channels.cache
       .filter(channel => channel.type === 'text' && !channel.deleted)
       .map(channel => {
         const channelObj = {
@@ -24,10 +24,10 @@ module.exports = class extends Route {
           parent: false,
         };
 
-        if (channel.parentID && guild.channels.has(channel.parentID)) {
+        if (channel.parentID && guild.channels.cache.has(channel.parentID)) {
           channelObj.parent = {
             id: channel.parentID,
-            name: guild.channels.get(channel.parentID).name,
+            name: guild.channels.cache.get(channel.parentID).name,
           };
         }
         return channelObj;
@@ -63,7 +63,9 @@ module.exports = class extends Route {
       return response.end('No valid settings in body');
     }
 
-    let dashboardUser = this.client.dashboardUsers.get(request.auth.scope[0]);
+    let dashboardUser = this.client.dashboardUsers.cache.get(
+      request.auth.scope[0]
+    );
 
     if (!dashboardUser) {
       const oauthUser = this.store.get('oauthUser');
@@ -99,11 +101,11 @@ module.exports = class extends Route {
     }
 
     // Check if bot is in guild
-    if (!this.client.guilds.has(guildID)) {
+    if (!this.client.guilds.cache.has(guildID)) {
       response.writeHead(403);
       return response.end('Bot is not in guild');
     }
-    const guild = this.client.guilds.get(guildID);
+    const guild = this.client.guilds.cache.get(guildID);
 
     // Embed settings
     if (request.body.embedSettings) {
@@ -164,7 +166,9 @@ module.exports = class extends Route {
     const oauthUser = this.store.get('oauthUser');
     if (!oauthUser) return this.notReady(response);
 
-    let dashboardUser = this.client.dashboardUsers.get(request.auth.scope[0]);
+    let dashboardUser = this.client.dashboardUsers.cache.get(
+      request.auth.scope[0]
+    );
 
     if (!dashboardUser) {
       dashboardUser = await oauthUser.api(request.auth.token);
@@ -197,13 +201,13 @@ module.exports = class extends Route {
     }
 
     // Check if bot is in guild
-    if (!this.client.guilds.has(guildID)) {
+    if (!this.client.guilds.cache.has(guildID)) {
       response.writeHead(403);
       return response.end('Bot is not in guild');
     }
 
     // Map response
-    const guild = this.client.guilds.get(guildID);
+    const guild = this.client.guilds.cache.get(guildID);
     const res = {
       name: guild.name,
       id: guild.id,

@@ -16,7 +16,9 @@ module.exports = class extends Route {
     const oauthUser = this.store.get('oauthUser');
     if (!oauthUser) return this.notReady(response);
 
-    let dashboardUser = this.client.dashboardUsers.get(request.auth.scope[0]);
+    let dashboardUser = this.client.dashboardUsers.cache.get(
+      request.auth.scope[0]
+    );
 
     if (!dashboardUser) {
       dashboardUser = await oauthUser.api(request.auth.token);
@@ -43,7 +45,7 @@ module.exports = class extends Route {
         id: guild.id,
         name: guild.name,
         iconURL: guild.iconURL,
-        botIsInGuild: this.client.guilds.has(guild.id),
+        botIsInGuild: this.client.guilds.cache.has(guild.id),
         inviteURL: `${this.client.invite}&guild_id=${guild.id}`,
       }));
 
