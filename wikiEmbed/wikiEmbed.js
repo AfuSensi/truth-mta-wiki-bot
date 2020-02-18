@@ -37,7 +37,10 @@ function countObjectCharLength(object) {
     if (Object.prototype.hasOwnProperty.call(object, property)) {
       if (typeof object[property] === 'object') {
         charCount += countObjectCharLength(object[property]);
-      } else {
+      } else if (
+        typeof object[property] === 'string' ||
+        typeof object[property] === 'number'
+      ) {
         charCount += object[property].toString().length;
       }
     }
