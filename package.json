@@ -12,7 +12,7 @@
     "axios": "^0.19.2",
     "discord.js": "github:discordjs/discord.js",
     "klasa": "github:dirigeants/klasa#master",
-    "klasa-dashboard-hooks": "github:dirigeants/klasa-dashboard-hooks#master",
+    "klasa-dashboard-hooks": "github:AfuSensi/klasa-dashboard-hooks#master",
     "mongodb": "^3.5.2",
     "mta-wiki-parser": "^1.0.8",
     "node-fetch": "^2.6.0",
