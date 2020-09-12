@@ -15,7 +15,7 @@
     "klasa-dashboard-hooks": "github:AfuSensi/klasa-dashboard-hooks#master",
     "mongodb": "^3.5.2",
     "mta-wiki-parser": "^1.0.8",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "string.prototype.matchall": "^4.0.2"
   },
   "devDependencies": {
