@@ -9,7 +9,7 @@
   "author": "AfuSensi",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "discord.js": "github:discordjs/discord.js",
     "klasa": "github:dirigeants/klasa#master",
     "klasa-dashboard-hooks": "github:AfuSensi/klasa-dashboard-hooks#master",
